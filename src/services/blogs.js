@@ -13,13 +13,10 @@ const getAll = () => {
 }
 
 const create = async newObject => {
-  console.log("NEWOBJECT", newObject)
   const config = {
     headers: { Authorization: token },
   }
-  console.log("CONFIG",config)
   const response = await axios.post(baseUrl, newObject, config)
-  console.log("NEW BLOG", response)
   return response.data
 }
 

@@ -78,9 +78,11 @@ const App = () => {
     setUser(null)
   }
 
+  // userId on localStorageen talletetun käyttäjän id
   const handleAddingBlog = (event) => {
     event.preventDefault()
-    blogService.create({ "title": title, "author": author, "url": url})
+    console.log("USER",user)
+    blogService.create({ "title": title, "author": author, "url": url, "userId": "634814c80f5618a4d39f0c86"})
     setNotification(`A new blog by author ${author} was added`)
     setTimeout(() => {
       setNotification(null)
