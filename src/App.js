@@ -93,7 +93,7 @@ const App = () => {
   }
 
   const blogFormRef = useRef()
-
+  
   if (user === null) {
     return (
       <div>
@@ -112,6 +112,10 @@ const App = () => {
       )
     }
     
+    const sortedBlogs = blogs.sort((a, b) => {
+      return a.likes - b.likes
+    })
+
     return (
       <div>
         <h2>blogs</h2>
@@ -122,10 +126,9 @@ const App = () => {
             <BlogForm createBlog={addBlog}/>
           </Togglable>
         <p></p>
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+        {sortedBlogs.map(blog =>
+          <Blog key={blog.id} blog={blog} user={JSON.parse(window.localStorage.getItem('loggedAppUser'))}/>
         )}
-        
       </div>
     )}
 
