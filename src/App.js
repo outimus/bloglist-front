@@ -14,9 +14,11 @@ const App = () => {
   const [notification, setNotification] = useState(null)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
+    blogService
+      .getAll()
+      .then(blogs => {
+        setBlogs( blogs )
+      })
   }, [])
 
   useEffect(() => {
@@ -84,12 +86,11 @@ const App = () => {
       .create(blogObject)
       .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
-        console.log(blogs)
       })
     setNotification(`A new blog by author ${blogObject.author} was added`)
     setTimeout(() => {
       setNotification(null)
-    }, 5000)
+    }, 3000)
   }
 
   const blogFormRef = useRef()
@@ -122,7 +123,7 @@ const App = () => {
       <p>{user.name} logged in  <button onClick={handleRemove}>logout</button></p>
       <h2>create new</h2>
       <SuccessNotification message={notification} />
-      <Togglable buttonLabel='new blog' ref={blogFormRef}>
+      <Togglable id='new-blog-button' buttonLabel='new blog' ref={blogFormRef}>
         <BlogForm createBlog={addBlog}/>
       </Togglable>
       <p></p>
