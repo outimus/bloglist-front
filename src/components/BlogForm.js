@@ -20,6 +20,7 @@ const BlogForm = ({ createBlog }) => {
   // userId on localStorageen tallennetun käyttäjän id
   const addBlog = (event) => {
     event.preventDefault()
+
     createBlog({
       title: newTitle,
       author: newAuthor,

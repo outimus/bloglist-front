@@ -25,16 +25,4 @@ describe('<Togglable />', () => {
     const div = container.querySelector('.togglableContent')
     expect(div).not.toHaveStyle('display: none')
   })
-
-  // 5.15 tehtävä/ ei toimi ollenkaan
-  /*test('clicking the "like" button calls event handler twice', async () => {
-    const mockHandler = jest.fn()
-    render(
-      < container like={mockHandler} />
-    )
-    const user = userEvent.setup()
-    const button = screen.getByText('like')
-    await user.click(button)
-    expect(mockHandler.mock.calls).toHaveLength(2)
-  })*/
 })

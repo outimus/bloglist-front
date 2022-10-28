@@ -5,6 +5,8 @@ import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
+import axios from 'axios'
+const url = 'http://localhost:3003/api/blogs/'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -74,10 +76,28 @@ const App = () => {
     }
   }
 
-  const handleRemove = async (event) => {
+  const handleLogout = async (event) => {
     event.preventDefault()
     window.localStorage.removeItem('loggedAppUser')
-    setUser(null)
+    setUser('')
+  }
+
+  const handleRemove = (blogObject) => {
+    if (window.confirm(`Are you sure you want to remove ${blogObject.blog.title} by author ${blogObject.blog.author}?`)) {
+      axios.delete(url + blogObject.blog.id)
+      const filtered = blogs.filter(blog => blog.id !== blogObject.blog.id)
+      setBlogs(filtered)
+      setUser('')}
+  }
+
+  const RemoveButton = (blogObject) => {
+    console.log(blogObject)
+    const whoAddedTheBlog = blogObject.blog.user.name
+    if (whoAddedTheBlog === user.name) {
+      return (
+        <button id="remove-button" onClick={() => handleRemove(blogObject)}> remove </button>
+      )
+    }
   }
 
   const addBlog = (blogObject) => {
@@ -90,7 +110,17 @@ const App = () => {
     setNotification(`A new blog by author ${blogObject.author} was added`)
     setTimeout(() => {
       setNotification(null)
-    }, 3000)
+    }, 5000)
+  }
+
+  const handleLike = (blogObject) => {
+    const id = blogObject.id
+    const blog = blogs.find(b => b.id === id)
+    const addLikes = blog.likes + 1
+    const updatedInfo = { ...blog, likes: addLikes }
+    blogService
+      .update(id, updatedInfo)
+    setBlogs(blogs.map(blog => blog.id !== id ? blog : updatedInfo))
   }
 
   const blogFormRef = useRef()
@@ -113,22 +143,27 @@ const App = () => {
     )
   }
 
-  const sortedBlogs = blogs.sort((a, b) => {
-    return a.likes - b.likes
+  const sortedBlogs = [...blogs].sort((a,b) => {
+    return b.likes - a.likes
   })
 
   return (
     <div>
-      <h2>blogs</h2>
-      <p>{user.name} logged in  <button onClick={handleRemove}>logout</button></p>
+      <h1>blogs</h1>
+      <p>{user.name} logged in  <button onClick={handleLogout}>logout</button></p>
       <h2>create new</h2>
       <SuccessNotification message={notification} />
-      <Togglable id='new-blog-button' buttonLabel='new blog' ref={blogFormRef}>
+      <Togglable buttonLabel='new blog' ref={blogFormRef}>
         <BlogForm createBlog={addBlog}/>
       </Togglable>
       <p></p>
       {sortedBlogs.map(blog =>
-        <Blog key={blog.id} blog={blog} user={JSON.parse(window.localStorage.getItem('loggedAppUser'))}/>
+        <Blog
+          key={blog.id}
+          blog={blog}
+          user={JSON.parse(window.localStorage.getItem('loggedAppUser'))}
+          handleLike={handleLike}
+          RemoveButton={RemoveButton}/>
       )}
     </div>
   )}
